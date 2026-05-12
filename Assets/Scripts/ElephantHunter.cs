@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 
 public class ElephantHunter : MonoBehaviour
 {
@@ -14,6 +15,9 @@ public class ElephantHunter : MonoBehaviour
 
     [Header("Effects")]
     public ParticleSystem elephantParticles;
+
+    [Header("Next Level")]
+    public string nextSceneName = "SCN-CatDog";
 
     void Update()
     {
@@ -60,6 +64,17 @@ public class ElephantHunter : MonoBehaviour
         else
         {
             Debug.LogWarning("Elephant Particles reference is MISSING in the inspector!");
+        }
+
+        // Wait a moment and then load next scene
+        Invoke(nameof(LoadNextLevel), 2f);
+    }
+
+    void LoadNextLevel()
+    {
+        if (!string.IsNullOrEmpty(nextSceneName))
+        {
+            SceneManager.LoadScene(nextSceneName);
         }
     }
 }

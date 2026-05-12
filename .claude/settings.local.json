@@ -14,7 +14,10 @@
       "PowerShell(Select-String -Path \"C:\\\\dev\\\\unity\\\\Taken Literally\\\\Assets\\\\SCN_Stage_Elephant.unity\" -Pattern \"m_Name:\" | ForEach-Object { $_.Line.Trim\\(\\) } | Select-Object -First 30)",
       "Bash(git checkout *)",
       "Bash(git add *)",
-      "Bash(git commit -m ' *)"
+      "Bash(git commit -m ' *)",
+      "Bash(Get-ChildItem -Path \"C:\\\\dev\\\\unity\\\\Taken Literally\" -Directory)",
+      "Bash(Select-Object Name)",
+      "PowerShell(head *)"
     ]
   }
 }
