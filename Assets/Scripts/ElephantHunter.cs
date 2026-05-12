@@ -1,16 +1,16 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
-using TMPro; // Ensure you have TextMeshPro installed
 
 public class ElephantHunter : MonoBehaviour
 {
     [Header("Detection Settings")]
+    public float proximityDistance = 5.0f;
     public float interactDistance = 3.0f;
     public string elephantTag = "Elephant";
-    public LayerMask interactLayer; // Set this to 'Default' in the Inspector
+    public LayerMask interactLayer;
 
     [Header("UI Elements")]
-    public GameObject interactPrompt; // The "Press E to Interact" UI object
+    public GameObject interactPrompt;
 
     [Header("Effects")]
     public ParticleSystem elephantParticles;
@@ -22,39 +22,40 @@ public class ElephantHunter : MonoBehaviour
 
     void CheckForElephant()
     {
-        // Shoot a ray from the center of the screen
-        Ray ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
-        RaycastHit hit;
-
-        if (Physics.Raycast(ray, out hit, interactDistance, interactLayer))
+        if (!IsElephantNearby())
         {
-            if (hit.collider.CompareTag(elephantTag))
-            {
-                // Show the prompt
-                if (interactPrompt != null) interactPrompt.SetActive(true);
-
-                if (Keyboard.current != null && Keyboard.current.eKey.wasPressedThisFrame)
-                {
-                    Debug.Log("E pressed while looking at elephant!");
-                    FoundElephant(hit.point);
-                }
-                return;
-            }
+            if (interactPrompt != null) interactPrompt.SetActive(false);
+            return;
         }
 
-        // Hide prompt if not looking at elephant or too far
-        if (interactPrompt != null) interactPrompt.SetActive(false);
+        Ray ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
+        RaycastHit hit;
+        bool isLooking = Physics.Raycast(ray, out hit, interactDistance, interactLayer)
+                         && hit.collider.CompareTag(elephantTag);
+
+        if (interactPrompt != null) interactPrompt.SetActive(isLooking);
+
+        if (isLooking && Keyboard.current != null && Keyboard.current.eKey.wasPressedThisFrame)
+            FoundElephant(hit.point);
+    }
+
+    bool IsElephantNearby()
+    {
+        Collider[] nearby = Physics.OverlapSphere(transform.position, proximityDistance);
+        foreach (var col in nearby)
+        {
+            if (col.CompareTag(elephantTag))
+                return true;
+        }
+        return false;
     }
 
     void FoundElephant(Vector3 hitPoint)
     {
-        Debug.Log($"FoundElephant triggered at {hitPoint}");
-        
         if (elephantParticles != null)
         {
             elephantParticles.transform.position = hitPoint;
             elephantParticles.Play();
-            Debug.Log("Particle system .Play() called.");
         }
         else
         {
