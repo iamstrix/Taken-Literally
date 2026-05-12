@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 using TMPro; // Ensure you have TextMeshPro installed
 
 public class ElephantHunter : MonoBehaviour
@@ -10,6 +11,9 @@ public class ElephantHunter : MonoBehaviour
 
     [Header("UI Elements")]
     public GameObject interactPrompt; // The "Press E to Interact" UI object
+
+    [Header("Effects")]
+    public ParticleSystem elephantParticles;
 
     void Update()
     {
@@ -27,23 +31,34 @@ public class ElephantHunter : MonoBehaviour
             if (hit.collider.CompareTag(elephantTag))
             {
                 // Show the prompt
-                interactPrompt.SetActive(true);
+                if (interactPrompt != null) interactPrompt.SetActive(true);
 
-                if (Input.GetKeyDown(KeyCode.E))
+                if (Keyboard.current != null && Keyboard.current.eKey.wasPressedThisFrame)
                 {
-                    FoundElephant();
+                    Debug.Log("E pressed while looking at elephant!");
+                    FoundElephant(hit.point);
                 }
                 return;
             }
         }
 
         // Hide prompt if not looking at elephant or too far
-        interactPrompt.SetActive(false);
+        if (interactPrompt != null) interactPrompt.SetActive(false);
     }
 
-    void FoundElephant()
+    void FoundElephant(Vector3 hitPoint)
     {
-        Debug.Log("Success! You found the elephant in the room.");
-        // Add logic here to load the next stage or trigger a win screen
+        Debug.Log($"FoundElephant triggered at {hitPoint}");
+        
+        if (elephantParticles != null)
+        {
+            elephantParticles.transform.position = hitPoint;
+            elephantParticles.Play();
+            Debug.Log("Particle system .Play() called.");
+        }
+        else
+        {
+            Debug.LogWarning("Elephant Particles reference is MISSING in the inspector!");
+        }
     }
 }
