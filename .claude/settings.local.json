@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(Get-ChildItem -Path \"C:\\\\dev\\\\unity\\\\Taken Literally\" -Recurse -Directory)",
+      "Bash(Select-Object -First 50)",
+      "Bash(Format-Table FullName)",
+      "PowerShell(Get-ChildItem -Path \"C:\\\\dev\\\\unity\\\\Taken Literally\\\\Assets\" -Recurse | Where-Object { $_.Extension -match '\\\\.\\(cs|unity|meta\\)$' } | Format-Table FullName)",
+      "Bash(git show *)",
+      "PowerShell(Get-ChildItem -Path \"C:\\\\dev\\\\unity\\\\Taken Literally\\\\Assets\" -Recurse -File | Where-Object { $_.Extension -eq '.cs' } | ForEach-Object { $_.FullName })",
+      "Bash(sed 's/.*m_Name: //')",
+      "Bash(Get-Content Assets/SCN_Stage_Elephant.unity)",
+      "Bash(Select-String \"m_Name:\")",
+      "Bash(Select-Object -First 30)",
+      "PowerShell(Select-String -Path \"C:\\\\dev\\\\unity\\\\Taken Literally\\\\Assets\\\\SCN_Stage_Elephant.unity\" -Pattern \"m_Name:\" | ForEach-Object { $_.Line.Trim\\(\\) } | Select-Object -First 30)"
+    ]
+  }
+}
